@@ -1,0 +1,44 @@
+{
+  "name": "shemibot",
+  "version": "0.1.0",
+  "description": "دایرکت هوشمند اینستاگرام - متن‌باز و خودمیزبان روی Cloudflare Workers",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "npm run db:migrate:remote && wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute instagram-smart-direct-db --local --file=./schema.sql -y",
+    "db:migrate:remote": "wrangler d1 execute instagram-smart-direct-db --remote --file=./schema.sql -y",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "grammy": "^1.30.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.0.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "TELEGRAM_BOT_TOKEN": {
+        "description": "توکن ربات تلگرام‌تون. از @BotFather در تلگرام با دستور /newbot بسازید و رشته‌ای شبیه 123456789:AAExxxx... رو اینجا بذارید."
+      },
+      "FACEBOOK_APP_ID": {
+        "description": "Instagram App ID از App Dashboard متا (بخش «API setup with Instagram login»). راهنمای کامل: docs/facebook-app-setup.md"
+      },
+      "FACEBOOK_APP_SECRET": {
+        "description": "Instagram App Secret — از همون صفحه‌ی App Dashboard متا، کنار App ID."
+      },
+      "ADMIN_TELEGRAM_ID": {
+        "description": "شناسه‌ی عددی حساب تلگرام خودتون (نه یوزرنیم) — از @userinfobot بگیرید. فقط همین شناسه اجازه‌ی فرمان‌دادن به ربات رو داره."
+      },
+      "IG_WEBHOOK_VERIFY_TOKEN": {
+        "description": "یک رشته‌ی دلخواه خودتون (مثلاً یک کلمه‌ی تصادفی). دقیقاً همین مقدار رو بعداً موقع ثبت وبهوک اینستاگرام در App Dashboard متا هم وارد می‌کنید."
+      },
+      "IG_API_VERSION": {
+        "description": "نسخه‌ی Instagram Graph API. مقدار پیش‌فرض معمولاً خوبه — فقط اگه متا این نسخه رو منسوخ کرده باشه لازمه عوضش کنید."
+      }
+    }
+  }
+}

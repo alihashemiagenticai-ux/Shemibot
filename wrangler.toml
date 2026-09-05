@@ -1,0 +1,37 @@
+# نکته: این اسم عمداً با نام ریپوزیتوری («Shemibot») یکیه. Cloudflare Workers Builds
+# موقع اتصال از طریق دکمه‌ی Deploy to Cloudflare، اسم پروژه رو از روی نام ریپو حدس می‌زنه؛
+# اگه اینجا اسم دیگه‌ای بذارید، یک اخطار بی‌خطر ولی گیج‌کننده («Worker name mismatch»)
+# توی لاگ دیپلوی اول می‌بینید. اگه از قبل با اسم دیگه‌ای دیپلوی کرده‌اید، عوض‌کردنش
+# ممکنه یک Worker جدید و جدا بسازه — در اون حالت این خط رو دست نزنید.
+name = "shemibot"
+main = "src/index.ts"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "instagram-smart-direct-db"
+# این مقدار واقعی نیست، فقط یک جای‌نگه‌دار به شکل UUID (چون طبق مستندات رسمی Cloudflare،
+# دکمه‌ی Deploy to Cloudflare برای auto-provision کردن هر binding به یک «مقدار پیش‌فرض
+# موجود» نیاز داره، نه یک خط خالی) — در مسیر دکمه، خودش با ID واقعی جایگزین می‌شه.
+# در مسیر نصب دستی، بعد از `wrangler d1 create instagram-smart-direct-db` این رو با
+# database_id واقعیِ خروجی همون دستور جایگزین کنید.
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[triggers]
+# هر روز ساعت ۳ بامداد UTC — چک روزانه‌ی رفرش توکن + پردازش صف فالوآپ
+crons = ["0 3 * * *"]
+
+[vars]
+# آخرین نسخه‌ی Graph API در زمان نوشتن این پروژه (۲۰۲۶/۰۷). قبل از دیپلوی واقعی چک کنید
+# که نسخه‌ی جدیدتری منتشر نشده باشه: developers.facebook.com/docs/graph-api/changelog
+IG_API_VERSION = "v26.0"
+
+# مقادیر Secret (توکن‌ها و کلیدها) عمداً اینجا نیستن — در فایل .dev.vars.example تعریف شدن.
+# همون فایله که به دکمه‌ی Deploy to Cloudflare می‌گه دقیقاً چه مقادیری رو، با چه توضیحی،
+# باید موقع نصب از کاربر بپرسه. برای دیدن توضیح هر مقدار و نحوه‌ی نصب دستی، همون فایل
+# یا package.json (بخش "cloudflare"."bindings") رو ببینید.
+#
+# نکته: این پروژه هیچ وابستگی‌ای به Cloudflare R2 نداره و نیازی به ثبت کارت بانکی در Cloudflare نیست.
+# ذخیره‌ی عکس/ویدیو/صدا از طریق یک کانال خصوصی تلگرام (که خودتون می‌سازید) انجام می‌شه —
+# جزئیات کامل در docs/deploy-guide-beginner.md.
